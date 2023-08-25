@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Iniciar Sesión</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>Iniciar Sesión</h1>
+  <form id="login-form">
+    <input type="email" name="email" placeholder="Correo electrónico" required>
+    <input type="password" name="password" placeholder="Contraseña" required>
+    <button type="submit">Iniciar Sesión</button>
+  </form>
+
+  <script>
+    $(document).ready(function() {
+      $('#login-form').submit(function(event) {
+        event.preventDefault();
+
+        const formData = {
+          email: $('input[name=email]').val(),
+          password: $('input[name=password]').val()
+        };
+
+        // Realiza una petición AJAX para el inicio de sesión
+        $.ajax({
+          type: 'POST',
+          url: '/login', // Ruta en tu servidor que maneja el inicio de sesión
+          data: formData,
+          success: function(response) {
+            // Maneja la respuesta del servidor, por ejemplo, redirige a la página principal
+            console.log(response.id)
+            window.location.href = `/profile/${response.id}`;
+          },
+          error: function(error) {
+            alert('Error al iniciar sesión'); // Muestra un mensaje de error en caso de falla
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

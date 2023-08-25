@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registro</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+
+<body>
+    <h1>Registro de Perros</h1>
+    <form id="register-form">
+        <input type="text" name="dogName" placeholder="Nombre del perro" required>
+        <select name="breedId" required>
+            <option value="">Selecciona una raza</option>
+            <!-- Las opciones se cargarán dinámicamente desde la base de datos -->
+        </select>
+        <input type="email" name="email" placeholder="Correo electrónico" required>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <input type="number" name="age" placeholder="Edad del perro" required>
+        <label for="lost">¿Perro perdido?</label>
+        <input type="checkbox" name="lost" id="lost">
+        <input type="file" onchange="encodeImageFileAsURL(this)" />
+        <input type="hidden" name="img" id="imagenescondida" />
+        <!-- Agrega otros campos aquí -->
+
+        <button type="submit">Registrar</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        function encodeImageFileAsURL(element) {
+        var file = element.files[0];
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            console.log('RESULT', reader.result)
+            document.getElementById("imagenescondida").value = reader.result;
+        }
+        reader.readAsDataURL(file);
+        }
+
+        $(document).ready(function () {
+            $('#register-form').submit(function (event) {
+                event.preventDefault();
+
+                const formData = {
+                    dogName: $('input[name=dogName]').val(),
+                    breedId: $('select[name=breedId]').val(), // Cambio aquí
+                    email: $('input[name=email]').val(),
+                    password: $('input[name=password]').val(),
+                    age: $('input[name=age]').val(),
+                    lost: $('input[name=lost]').prop('checked'),
+                    imageUrl: $('input[name=img]').val()
+
+                    // Agrega aquí otros campos del formulario
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/register',
+                    data: formData,
+                    success: function (response) {
+                        window.location.href = `/login`;
+                    },
+                    error: function (error) {
+                        alert('Error en el registro');
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            // Obtener opciones de raza desde el servidor
+            $.ajax({
+                type: 'GET',
+                url: '/breeds', // Ruta en tu servidor que devuelve las opciones de raza
+                success: function (breeds) {
+                    const breedSelect = $('select[name=breedId]');
+
+                    // Llenar el select con las opciones de raza
+                    breeds.forEach(function (breed) {
+                        breedSelect.append($('<option>', {
+                            value: breed.id,
+                            text: breed.nombre
+                        }));
+                    });
+                },
+                error: function (error) {
+                    alert('Error al cargar las opciones de raza');
+                }
+            });
+
+            // Resto de tu código para el registro
+        });
+
+    </script>
+</body>
+
+</html>

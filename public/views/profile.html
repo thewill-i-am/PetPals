@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Perfil del Perro</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<style>
+
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+  }
+  
+  h1 {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #333;
+    margin: 0 10px;
+    transition: color 0.3s;
+  }
+  
+  /* Estilos para los botones */
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Estilos para los formularios */
+  form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+
+#dog-profile {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+#imagentabla{
+    width: 20%;
+    height: 50%;
+}
+
+</style>
+<body>
+  <h1>Perfil del Perro</h1>
+  <div id="dog-profile">
+    <!-- Aquí se mostrará la información del perfil del perro -->
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // Obtén el ID del perro desde la URL
+    const dogId = window.location.pathname.split('/').pop();
+    console.log("esto es lo que llega", dogId)
+
+    $(document).ready(function() {
+      // Realiza una petición AJAX para obtener la información del perfil del perro
+      $.ajax({
+        type: 'GET',
+        url: !dogId ? `http://localhost:3000/allinfo` : `http://localhost:3000/info/${dogId}`, // Ruta en tu servidor que maneja la obtención del perfil
+        success: function(response) {
+          const dogProfiles = response; // Suponiendo que el servidor envía un objeto con la información del perfil
+
+          dogProfiles.forEach(function(dogProfile) {
+          $('#dog-profile').append(`
+            <div class="dog-card">
+              <h2>${dogProfile.nombre}</h2>
+              <p>Raza: ${dogProfile.raza}</p>
+              <p>Edad: ${dogProfile.edad}</p>
+              <img id="imagentabla" src=${dogProfile.imagen_url} />
+              <!-- Agrega más campos aquí -->
+            </div>
+          `);
+        });
+      },
+        error: function(error) {
+          alert('Error al cargar el perfil del perro');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
